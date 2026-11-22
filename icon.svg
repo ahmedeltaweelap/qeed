@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<rect width="512" height="512" fill="#0B132B"/>
+<rect x="28" y="28" width="456" height="456" rx="56" fill="none" stroke="#C5A059" stroke-width="8"/>
+<ellipse cx="136" cy="268" rx="60" ry="40" fill="#C5A059"/>
+<ellipse cx="376" cy="268" rx="60" ry="40" fill="#C5A059"/>
+<rect x="76" y="218" width="120" height="50" fill="#0B132B"/>
+<rect x="316" y="218" width="120" height="50" fill="#0B132B"/>
+<circle cx="256" cy="126" r="18" fill="#C5A059"/>
+<line x1="116" y1="164" x2="396" y2="164" stroke="#C5A059" stroke-width="14"/>
+<line x1="256" y1="144" x2="256" y2="360" stroke="#C5A059" stroke-width="16"/>
+<line x1="186" y1="376" x2="326" y2="376" stroke="#C5A059" stroke-width="16"/>
+<line x1="136" y1="164" x2="96" y2="268" stroke="#DCB973" stroke-width="8"/>
+<line x1="136" y1="164" x2="176" y2="268" stroke="#DCB973" stroke-width="8"/>
+<line x1="376" y1="164" x2="336" y2="268" stroke="#DCB973" stroke-width="8"/>
+<line x1="376" y1="164" x2="416" y2="268" stroke="#DCB973" stroke-width="8"/>
+</svg>
