@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0B132B">
+    <title>مُصيغ القيد والوصف الذكي — نسخة الاختبار المنضبطة (v5)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        judicial: { 950: '#060B19', 900: '#0B132B', 800: '#1C2541', 700: '#2A365F', gold: '#C5A059' }
+                    },
+                    fontFamily: { sans: ['Cairo', 'sans-serif'], serif: ['Amiri', 'serif'] }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #F1F5F9; color: #1E293B; }
+        .step-badge { background: #0B132B; color: #C5A059; width: 24px; height: 24px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 800; }
+        .vtype-btn-active { background-color: #0B132B !important; color: #C5A059 !important; border-color: #C5A059 !important; box-shadow: 0 2px 8px rgba(11, 19, 43, 0.2); }
+    </style>
+</head>
+<body class="font-sans antialiased pb-12">
+
+    <header class="bg-judicial-900 text-white py-3 px-4 border-b-2 border-judicial-gold shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-2">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-judicial-800 border border-judicial-gold flex items-center justify-center text-judicial-gold font-bold">
+                    <i class="fa-solid fa-feather-pointed"></i>
+                </div>
+                <div>
+                    <h1 class="font-serif text-lg md:text-xl font-bold text-judicial-gold">مُصيغ القيد والوصف الذكي — منصة المُـعَـاوِن</h1>
+                    <p class="text-[11px] text-slate-300">نسخة اختبار مستقلة منضبطة وفق القرارين 517 و518 لسنة 2026 وقرار الرقم القومي 172/2025</p>
+                </div>
+            </div>
+            <span class="bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-xs font-bold px-3 py-1 rounded-full">
+                يعمل محلياً 100% دون اتصال
+            </span>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 mt-5">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+
+            <!-- العمود الأيمن: 3 خطوات فقط -->
+            <div class="lg:col-span-5 space-y-4">
+
+                <!-- الخطوة 1: جهة العمل -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-2.5">
+                    <div class="flex items-center gap-2 border-b pb-2">
+                        <span class="step-badge">1</span>
+                        <h2 class="font-bold text-sm text-judicial-900">جهة عمل المتهم (تحديد القانون واللائحة الحاكمة)</h2>
+                    </div>
+                    <input type="text" id="entity_search" onkeyup="filterEntities()" placeholder="🔍 ابحث باسم الجهة (مثال: ضرائب، بريد، سكة حديد، تأمين، تعليم، صحة، ميناء)..." class="w-full border rounded-xl p-2 text-xs bg-slate-50 focus:border-judicial-gold focus:outline-none">
+                    <select id="sel_entity" onchange="onEntityChange()" class="w-full border-2 border-judicial-900/20 rounded-xl p-2.5 text-xs font-bold bg-white text-judicial-900 cursor-pointer">
+                        <optgroup label="أولاً: الجهاز الإداري والمحليات والقطاعات النوعية">
+                            <option value="civil_81">1. جهة حكومية / مديرية / هيئة غير مستثناة (ق الخدمة المدنية 81/2016)</option>
+                            <option value="local_43">2. وحدات الإدارة المحلية والمحافظات (ق 81/2016 + ق الإدارة المحلية 43/1979)</option>
+                            <option value="taxes_real_estate">3. مصلحة الضرائب العقارية / الضرائب العامة (ق 196/2008 وق 206/2020 + الدفع غير النقدي)</option>
+                            <option value="education_teachers">4. مديريات التربية والتعليم والمعلمون (ق 81/2016 + كادر المعلمين 139/1981 المعدل بـ 155/2007)</option>
+                            <option value="health_medical">5. مديريات الصحة والمستشفيات الحكومية (ق 81/2016 + ق تنظيم المهن الطبية 14/2014)</option>
+                            <option value="legal_affairs">6. مديرو وأعضاء الإدارات القانونية (قانون الإدارات القانونية رقم 47 لسنة 1973)</option>
+                        </optgroup>
+                        <optgroup label="ثانياً: الهيئات العامة الخدمية والاقتصادية ذات اللوائح الخاصة">
+                            <option value="egypt_post">7. الهيئة القومية للبريد (قانون البريد 16/1970 ولائحة العاملين بالهيئة)</option>
+                            <option value="railways">8. الهيئة القومية لسكك حديد مصر (قانون 152/1980 ولائحة العاملين بالهيئة)</option>
+                            <option value="social_insurance">9. الهيئة القومية للتأمين الاجتماعي (قانون التأمينات 148/2019 ولائحة العاملين)</option>
+                            <option value="ambulance_auth">10. هيئة الإسعاف المصرية (قرار الإنشاء 139/2009 ولائحة العاملين)</option>
+                            <option value="health_insurance">11. الهيئة العامة للتأمين الصحي (قرار الإنشاء 1209/1964 ولائحة العاملين)</option>
+                            <option value="awqaf_auth">12. هيئة الأوقاف المصرية (قرار الإنشاء 809/1971 ولائحة العاملين)</option>
+                            <option value="new_urban">13. هيئة المجتمعات العمرانية الجديدة (قانون 59/1979 ولائحة العاملين)</option>
+                            <option value="port_damietta">14. هيئة ميناء دمياط (قرار 317/1985 ولائحة 848/2017)</option>
+                            <option value="port_redsea">15. الهيئة العامة لموانئ البحر الأحمر (قرار 217/1978 ولائحة 33/2017)</option>
+                            <option value="sczone">16. الهيئة العامة للمنطقة الاقتصادية لقناة السويس (ق 83/2002 ولائحة 175/2020)</option>
+                            <option value="nat_tunnels">17. الهيئة القومية للأنفاق (ق 113/1983 ولائحة قرار وزير النقل 20/1984)</option>
+                            <option value="cta_cairo">18. هيئة النقل العام بالقاهرة (قرار 2716/1966 ولائحة 19/1988)</option>
+                            <option value="alex_transport">19. الهيئة العامة لنقل الركاب بالإسكندرية (قرار 4494/1965 + ق 81/2016)</option>
+                            <option value="nrc_research">20. المركز القومي للبحوث - غير هيئة البحوث (ق 69/1973 وقرار 410/2021)</option>
+                        </optgroup>
+                        <optgroup label="ثالثاً: الجامعات والتعاونيات وشركات القطاع العام">
+                            <option value="universities_staff">21. الجامعات الحكومية - غير هيئة التدريس (ق 49/1972 وم 163 - بطلب رئيس الجامعة)</option>
+                            <option value="coop_agri">22. الجمعيات التعاونية الزراعية (ق 122/1980 ولائحة مديري الجمعيات)</option>
+                            <option value="public_48">23. شركات القطاع العام (القانون رقم 48 لسنة 1978)</option>
+                            <option value="business_holding">24. الشركات القابضة بقطاع الأعمال العام (ق 203/1991 المعدل بـ 185/2020)</option>
+                        </optgroup>
+                    </select>
+                    <div id="entity_note_box" class="p-2.5 rounded-xl bg-amber-50 border border-judicial-gold/50 text-[11px] text-judicial-900 leading-relaxed"></div>
+                </div>
+
+                <!-- الخطوة 2: توصيف المخالفة وموضوعها والتصرف -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-3">
+                    <div class="flex items-center gap-2 border-b pb-2">
+                        <span class="step-badge">2</span>
+                        <h2 class="font-bold text-sm text-judicial-900">توصيف المخالفة وموضوعها والتصرف المقترح</h2>
+                    </div>
+
+                    <!-- اختيار نوع القيد: إدارية / مالية / مالية وإدارية -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1.5">نوع المخالفة في صدر القيد (اختر الوصف الدقيق):</label>
+                        <div class="grid grid-cols-3 gap-1.5 text-center text-xs font-bold">
+                            <button type="button" onclick="setViolationNature('مخالفة إدارية')" id="vnature-admin" class="vtype-btn vtype-btn-active py-2 px-1.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 cursor-pointer transition">
+                                مخالفة إدارية
+                            </button>
+                            <button type="button" onclick="setViolationNature('مخالفة مالية')" id="vnature-fin" class="vtype-btn py-2 px-1.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 cursor-pointer transition">
+                                مخالفة مالية
+                            </button>
+                            <button type="button" onclick="setViolationNature('مخالفة مالية وإدارية')" id="vnature-both" class="vtype-btn py-2 px-1.5 rounded-xl border border-slate-300 bg-slate-50 text-slate-800 cursor-pointer transition">
+                                مالية وإدارية
+                            </button>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">طبيعة الواقعة (تُضيف المواد الموضوعية تلقائياً):</label>
+                        <select id="sel_topic" onchange="onTopicChange()" class="w-full border rounded-xl p-2.5 text-xs font-bold bg-white cursor-pointer">
+                            <option value="admin_general">تقصير في أداء الواجب الوظيفي بدقة وأمانة</option>
+                            <option value="financial">إهدار مال عام / عجز عهدة / سلف (+ م 11 ق الجهاز المركزي للمحاسبات)</option>
+                            <option value="tenders">مخالفة مناقصات وتعاقدات ومخازن (+ قانون التعاقدات 182 لسنة 2018)</option>
+                            <option value="building">مخالفة بناء أو تعدٍ على أرض زراعية (+ قانون البناء 119 لسنة 2008)</option>
+                            <option value="absence">انقطاع عن العمل بدون إذن (+ مواد الانقطاع)</option>
+                            <option value="public_treat">سوء معاملة الجمهور أو التباطؤ في الخدمة (+ م 150/13 لائحة)</option>
+                            <option value="criminal_offense">واقعة تشكل جريمة جنائية (اختلاس / تزوير / رشوة / إضرار) (+ عقوبات)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-emerald-900 mb-1">التصرف في القضية:</label>
+                        <select id="sel_action" onchange="generateQaydOutput()" class="w-full border-2 border-emerald-600/40 rounded-xl p-2.5 text-xs font-bold bg-emerald-50/70 text-emerald-950 cursor-pointer">
+                            <option value="majaza">1. مجازاة المخالف تأديبياً (قرار جزاء من النيابة)</option>
+                            <option value="ihala">2. إحالة المخالف إلى المحكمة التأديبية المختصة</option>
+                            <option value="hifz_ahamia">3. حفظ الواقعة قطعياً لعدم الأهمية (قيد بدون م 61 + الرقم القومي)</option>
+                            <option value="hifz_saha">4. حفظ الأوراق قطعياً لعدم الصحة (بدون قيد)</option>
+                            <option value="hifz_mukhalafa">5. حفظ الأوراق قطعياً لعدم المخالفة (بدون قيد)</option>
+                            <option value="hifz_moaqat">6. حفظ الأوراق مؤقتاً لعدم كفاية الأدلة (بدون قيد)</option>
+                        </select>
+                    </div>
+
+                    <div class="pt-1">
+                        <label class="inline-flex items-center gap-2 text-xs font-bold text-red-900 bg-red-50 px-3 py-2 rounded-xl border border-red-200 cursor-pointer w-full">
+                            <input type="checkbox" id="chk_retired" onchange="generateQaydOutput()">
+                            <span>المتهم بالمعاش / انتهت خدمته (يضيف م 66 خدمة مدنية وم 20، 21 مجلس الدولة)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- الخطوة 3: بيانات المتهم والمنسوبية -->
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 space-y-2.5">
+                    <div class="flex items-center gap-2 border-b pb-2">
+                        <span class="step-badge">3</span>
+                        <h2 class="font-bold text-sm text-judicial-900">بيانات المتهم والمنسوبية (الوصف المادي)</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                        <input type="text" id="inp_name" oninput="generateQaydOutput()" placeholder="اسم المخالف ووظيفته ودرجته" class="border rounded-xl p-2.5">
+                        <input type="text" id="inp_nid" oninput="generateQaydOutput()" maxlength="14" placeholder="الرقم القومي (14 رقماً)" class="border rounded-xl p-2.5 font-mono">
+                        <input type="text" id="inp_date" oninput="generateQaydOutput()" placeholder="تاريخ / فترة الواقعة (غضون عام 2026)" class="border rounded-xl p-2.5">
+                        <input type="text" id="inp_place" oninput="generateQaydOutput()" placeholder="مقر العمل (بدائرة ...)" class="border rounded-xl p-2.5">
+                    </div>
+                    <textarea id="inp_fact" rows="3" oninput="generateQaydOutput()" placeholder="اكتب هنا المنسوبية (ماذا فعل المتهم أو امتنع عنه تحديداً)..." class="w-full border rounded-xl p-2.5 text-xs leading-relaxed"></textarea>
+                </div>
+
+            </div>
+
+            <!-- العمود الأيسر: النتيجة الفورية -->
+            <div class="lg:col-span-7 space-y-4">
+
+                <!-- شريط التنبيه الذكي -->
+                <div id="guard_banner" class="p-3.5 rounded-2xl border-2 text-xs font-bold"></div>
+
+                <!-- 1. التكييف القانوني -->
+                <div class="bg-amber-50 p-4 rounded-2xl border border-judicial-gold shadow-sm space-y-2">
+                    <div class="flex justify-between items-center border-b border-judicial-gold/30 pb-1.5">
+                        <h3 class="font-extrabold text-xs text-amber-950">أولاً: فقرة التكييف القانوني (تُكتب في ختام الأسباب قبل "لذلك نرى")</h3>
+                        <button type="button" onclick="copyText('box_taakeef')" class="bg-judicial-900 text-judicial-gold px-3 py-1 rounded-lg text-xs font-bold cursor-pointer">نسخ التكييف</button>
+                    </div>
+                    <div id="box_taakeef" contenteditable="true" class="font-serif text-base text-slate-900 bg-white p-3.5 rounded-xl border border-judicial-gold/40 leading-relaxed whitespace-pre-line"></div>
+                </div>
+
+                <!-- 2. منطوق القيد والوصف والتصرف -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-judicial-900 shadow-sm space-y-2.5">
+                    <div class="flex flex-wrap justify-between items-center border-b pb-2 gap-2">
+                        <h3 class="font-extrabold text-sm text-judicial-900">ثانياً: منطوق القيد والوصف والتصرف النهائي</h3>
+                        <div class="flex gap-2">
+                            <button type="button" onclick="copyText('box_qayd')" class="bg-judicial-900 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer">نسخ القيد</button>
+                            <button type="button" onclick="copyAll()" class="bg-judicial-gold text-judicial-950 px-3 py-1.5 rounded-lg text-xs font-extrabold cursor-pointer">نسخ الكل معاً</button>
+                            <button type="button" onclick="exportWord()" class="bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold cursor-pointer"><i class="fa-solid fa-file-word ml-1"></i> تحميل Word</button>
+                        </div>
+                    </div>
+                    <div id="box_qayd" contenteditable="true" class="font-serif text-lg text-slate-950 bg-slate-50 p-4 rounded-xl border leading-loose whitespace-pre-line min-h-[220px]"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        var NL = String.fromCharCode(10);
+        var currentViolationNature = "مخالفة إدارية";
+
+        var ENTITIES = {
+            civil_81: {
+                isCivil: true,
+                note: "يخضع العاملون لأحكام قانون الخدمة المدنية رقم 81 لسنة 2016 ولائحته التنفيذية رقم 1216 لسنة 2017.",
+                lawName: "قانون الخدمة المدنية الصادر بالقانون رقم 81 لسنة 2016 ولائحته التنفيذية الصادرة بالقرار رقم 1216 لسنة 2017",
+                prefix: "",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            local_43: {
+                isCivil: true,
+                note: "تُضاف مواد قانون نظام الإدارة المحلية رقم 43 لسنة 1979 وتعديلاته إلى قانون الخدمة المدنية 81 لسنة 2016.",
+                lawName: "قانون الخدمة المدنية رقم 81 لسنة 2016 ولائحته التنفيذية وقانون نظام الإدارة المحلية رقم 43 لسنة 1979",
+                prefix: "المادتين 27، و27 مكرراً/1، والمادة 91 من قانون نظام الإدارة المحلية الصادر بالقانون رقم 43 لسنة 1979 وتعديلاته، و",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            taxes_real_estate: {
+                isCivil: true,
+                note: "تُضاف أحكام قانون الضرائب العقارية رقم 196 لسنة 2008 (أو الإجراءات الضريبية الموحد 206 لسنة 2020) وقانون تنظيم الدفع غير النقدي رقم 18 لسنة 2019 ولائحته رقم 1776 لسنة 2020.",
+                lawName: "قانون الخدمة المدنية رقم 81 لسنة 2016 ولائحته التنفيذية والقوانين واللوائح الضريبية المنظمة",
+                prefix: "",
+                extraCivilSubject: "، وأحكام قانون الضرائب العقارية رقم 196 لسنة 2008 وقانون الإجراءات الضريبية الموحد رقم 206 لسنة 2020، ولائحة قانون تنظيم استخدام وسائل الدفع غير النقدي رقم 18 لسنة 2019 الصادرة بالقرار رقم 1776 لسنة 2020",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            education_teachers: {
+                isCivil: true,
+                note: "يخضع المعلمون لأحكام قانون التعليم رقم 139 لسنة 1981 المعدل بالقانون رقم 155 لسنة 2007 (كادر المعلمين) وقانون الخدمة المدنية 81 لسنة 2016.",
+                lawName: "قانون التعليم رقم 139 لسنة 1981 المعدل بالقانون رقم 155 لسنة 2007 وقانون الخدمة المدنية رقم 81 لسنة 2016 ولائحته التنفيذية",
+                prefix: "",
+                extraCivilSubject: "، وأحكام قانون التعليم الصادر بالقانون رقم 139 لسنة 1981 المعدل بالقانون رقم 155 لسنة 2007 ولائحته التنفيذية",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            health_medical: {
+                isCivil: true,
+                note: "تُضاف أحكام قانون تنظيم شؤون أعضاء المهن الطبية رقم 14 لسنة 2014 وأخلاقيات المهنة الطبية إلى قانون الخدمة المدنية 81 لسنة 2016.",
+                lawName: "قانون الخدمة المدنية رقم 81 لسنة 2016 ولائحته التنفيذية وقانون تنظيم شؤون أعضاء المهن الطبية رقم 14 لسنة 2014",
+                prefix: "",
+                extraCivilSubject: "، وأحكام قانون تنظيم شؤون أعضاء المهن الطبية رقم 14 لسنة 2014 والتعليمات الطبية المنظمة",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            legal_affairs: {
+                isCivil: true,
+                note: "⚠️ ضابط خاص (قانون 47 لسنة 1973): يُراعى عرض التحقيق مع مديري وأعضاء الإدارات القانونية على اللجنة المشكلة بالمادة 21 من القانون 47 لسنة 1973 قبل التصرف أو الإحالة.",
+                lawName: "قانون الإدارات القانونية رقم 47 لسنة 1973 وقانون الخدمة المدنية رقم 81 لسنة 2016",
+                prefix: "المواد 1، و2، و21، و23، و24 من القانون رقم 47 لسنة 1973 بشأن الإدارات القانونية بالمؤسسات والهيئات العامة والوحدات التابعة لها، و",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            egypt_post: {
+                isCivil: false,
+                note: "يخضع العاملون بالهيئة القومية للبريد لقانون إنشائها رقم 16 لسنة 1970 ولائحة نظام العاملين بالهيئة وقانون الهيئات العامة.",
+                lawName: "قانون الهيئة القومية للبريد رقم 16 لسنة 1970 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام القانون رقم 16 لسنة 1970 بنظام البريد، وقرار رئيس الجمهورية رقم 710 لسنة 1957، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة نظام العاملين بالهيئة القومية للبريد",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            railways: {
+                isCivil: false,
+                note: "تخضع الهيئة القومية لسكك حديد مصر لقانون إنشائها رقم 152 لسنة 1980 ولائحة نظام العاملين بالهيئة.",
+                lawName: "قانون إنشاء الهيئة القومية لسكك حديد مصر رقم 152 لسنة 1980 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام القانون رقم 152 لسنة 1980 بإنشاء الهيئة القومية لسكك حديد مصر وتعديلاته، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة نظام العاملين بالهيئة القومية لسكك حديد مصر",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            social_insurance: {
+                isCivil: false,
+                note: "تخضع الهيئة القومية للتأمين الاجتماعي لقانون التأمينات الاجتماعية والمعاشات رقم 148 لسنة 2019 ولائحة الموارد البشرية بالهيئة.",
+                lawName: "قانون التأمينات الاجتماعية والمعاشات رقم 148 لسنة 2019 ولائحة الموارد البشرية بالهيئة",
+                prefix: "أحكام قانون التأمينات الاجتماعية والمعاشات الصادر بالقانون رقم 148 لسنة 2019، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة الموارد البشرية بالهيئة القومية للتأمين الاجتماعي",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            ambulance_auth: {
+                isCivil: false,
+                note: "تخضع هيئة الإسعاف المصرية لقرار إنشائها رقم 139 لسنة 2009 ولائحة شؤون العاملين بالهيئة.",
+                lawName: "قرار إنشاء هيئة الإسعاف المصرية رقم 139 لسنة 2009 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام قرار رئيس الجمهورية رقم 139 لسنة 2009 بإنشاء هيئة الإسعاف المصرية، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة شئون العاملين بهيئة الإسعاف المصرية",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            health_insurance: {
+                isCivil: false,
+                note: "تخضع الهيئة العامة للتأمين الصحي لقرار إنشائها رقم 1209 لسنة 1964 ولائحة شؤون العاملين بالهيئة.",
+                lawName: "قرار إنشاء الهيئة العامة للتأمين الصحي رقم 1209 لسنة 1964 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام قرار رئيس الجمهورية رقم 1209 لسنة 1964 في شأن إنشاء الهيئة العامة للتأمين الصحي، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة شئون العاملين بالهيئة العامة للتأمين الصحي",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            awqaf_auth: {
+                isCivil: false,
+                note: "تخضع هيئة الأوقاف المصرية لقرار إنشائها رقم 809 لسنة 1971 ولائحة شؤون العاملين بالهيئة.",
+                lawName: "قرار إنشاء هيئة الأوقاف المصرية رقم 809 لسنة 1971 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام قرار رئيس الجمهورية رقم 809 لسنة 1971 بإنشاء هيئة الأوقاف المصرية، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة شئون العاملين بهيئة الأوقاف المصرية",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            new_urban: {
+                isCivil: false,
+                note: "تخضع هيئة المجتمعات العمرانية الجديدة للقانون رقم 59 لسنة 1979 ولائحة شؤون العاملين بالهيئة.",
+                lawName: "قانون إنشاء هيئة المجتمعات العمرانية الجديدة رقم 59 لسنة 1979 ولائحة شئون العاملين بالهيئة",
+                prefix: "أحكام القانون رقم 59 لسنة 1979 في شأن إنشاء المجتمعات العمرانية الجديدة، و",
+                base: "مواد الواجبات والمحظورات والتأثيم بلائحة شئون العاملين بهيئة المجتمعات العمرانية الجديدة",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            port_damietta: {
+                isCivil: false,
+                note: "⚠️ ضابط اختصاص (م 114 لائحة الهيئة): التحقيق مع شاغلي الإدارة العليا وفي المخالفات المالية الماسة بحقوق الهيئة يكون بناءً على طلب رئيس مجلس الإدارة. وتُدرج المادة 62 خدمة مدنية لتحديد السلطة المختصة بالتصرف.",
+                lawName: "لائحة شئون العاملين بهيئة ميناء دمياط الصادرة بقرار رئيس مجلس الإدارة رقم 848 لسنة 2017",
+                prefix: "المادتين الأولى، والسادسة/أ من قرار رئيس الجمهورية رقم 317 لسنة 1985 بإنشاء هيئة ميناء دمياط، و",
+                base: "المواد 88/1، و89/1، و90، و112، و114/فقرة أخيرة من لائحة شئون العاملين بالهيئة الصادرة بالقرار رقم 848 لسنة 2017",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 104 من لائحة الهيئة والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            port_redsea: {
+                isCivil: false,
+                note: "⚠️ ضابط اختصاص (م 113 لائحة الهيئة): التحقيق مع شاغلي الإدارة العليا وفي المخالفات المالية يكون بناءً على طلب رئيس مجلس الإدارة.",
+                lawName: "لائحة شئون العاملين بالهيئة العامة لموانئ البحر الأحمر الصادرة بالقرار رقم 33 لسنة 2017",
+                prefix: "المادتين 1، و6/(أ) من قرار رئيس الجمهورية رقم 217 لسنة 1978 بإنشاء الهيئة العامة لموانئ البحر الأحمر، و",
+                base: "المواد الأولى، و87/1، و88/1، و89، و111، و113 من لائحة شئون العاملين بالهيئة الصادرة بالقرار رقم 33 لسنة 2017",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 103 من لائحة الهيئة والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            sczone: {
+                isCivil: false,
+                note: "✅ ضابط قيد: لا تُدرج مواد قانون الخدمة المدنية 81/2016 لاكتفاء لائحة الموارد البشرية (قرار 175 لسنة 2020) بالتنظيم الكامل.",
+                lawName: "لائحة الموارد البشرية للهيئة العامة للمنطقة الاقتصادية لقناة السويس الصادرة بالقرار رقم 175 لسنة 2020",
+                prefix: "المواد 2، و3، و15 من القانون رقم 83 لسنة 2002 بإصدار قانون المناطق الاقتصادية ذات الطبيعة الخاصة، وقرار رئيس الجمهورية رقم 330 لسنة 2015، وقرار رئيس مجلس الوزراء رقم 2282 لسنة 2015، و",
+                base: "المواد الأولى، و59/1، و60/1، و62، و64، و65، و66 من لائحة الموارد البشرية الصادرة بالقرار رقم 175 لسنة 2020",
+                majaza: "، والمادة 64 من لائحة الموارد البشرية بالهيئة",
+                ihala: "، والمادة 68 من لائحة الموارد البشرية بالهيئة",
+                retired: "، والمادة 73 من لائحة الموارد البشرية بالهيئة",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            nat_tunnels: {
+                isCivil: false,
+                note: "✅ ضابط قيد: لا تُدرج مواد قانون الخدمة المدنية؛ حيث تخضع للائحة نظام العاملين الصادرة بقرار وزير النقل رقم 20 لسنة 1984.",
+                lawName: "لائحة نظام العاملين بالهيئة القومية للأنفاق الصادرة بقرار وزير النقل رقم 20 لسنة 1984",
+                prefix: "المواد الأولى، والتاسعة/5، والرابعة عشرة من القانون رقم 113 لسنة 1983 بإنشاء الهيئة القومية للأنفاق وتعديلاته، و",
+                base: "المواد 86/1، و87/1، و88، و90، و92 من لائحة نظام العاملين بالهيئة الصادرة بقرار وزير النقل رقم 20 لسنة 1984",
+                majaza: "، والمادة 92 من لائحة نظام العاملين بالهيئة",
+                ihala: "، والمادة 92/3 من لائحة نظام العاملين بالهيئة",
+                retired: "، والمادة 98 من لائحة نظام العاملين بالهيئة",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            cta_cairo: {
+                isCivil: false,
+                note: "✅ فتوى الجمعية العمومية لقسمي الفتوى والتشريع (ملف 58/1/241 بتاريخ 30/4/2018): لا يخضع العاملون بالهيئة للمادة 60 خدمة مدنية، وتختص النيابة بما يحيله رئيس مجلس الإدارة.",
+                lawName: "لائحة شئون العاملين بهيئة النقل العام بالقاهرة الصادرة بالقرار رقم 19 لسنة 1988 ولائحة الجزاءات رقم 17 لسنة 1994",
+                prefix: "المادة الأولى من قرار رئيس الجمهورية رقم 1891 لسنة 1964، والمادتين 1، و4/6 من قرار رئيس الجمهورية رقم 2716 لسنة 1966، و",
+                base: "المواد الأولى، و80/1، و81/1، و82، و84، و86 من لائحة شئون العاملين بالقرار 19/1988، والمادتين 1، و11 من لائحة الجزاءات رقم 17/1994",
+                majaza: "، والمادة 86 من لائحة شئون العاملين بالهيئة",
+                ihala: "، والمادة 86/5 من لائحة شئون العاملين بالهيئة",
+                retired: "، والمادة 92 من لائحة شئون العاملين بالهيئة",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            alex_transport: {
+                isCivil: true,
+                note: "طبقاً للمادة الرابعة من قرار الإنشاء رقم 4494 لسنة 1965، تسري أحكام قانون الخدمة المدنية 81 لسنة 2016 على العاملين بالهيئة.",
+                lawName: "قانون الخدمة المدنية رقم 81 لسنة 2016 وقرار إنشاء الهيئة رقم 4494 لسنة 1965",
+                prefix: "المادتين 1، و4 من قرار رئيس الجمهورية رقم 4494 لسنة 1965 بشأن تنظيم إدارة النقل العام لمدينة الإسكندرية، و",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            nrc_research: {
+                isCivil: true,
+                note: "طبقاً للمادة الثالثة من قرار رئيس الجمهورية 410 لسنة 2021، يُطبق قانون الخدمة المدنية على العاملين بالمركز من غير أعضاء هيئة البحوث والهيئة المعاونة.",
+                lawName: "قانون الخدمة المدنية رقم 81 لسنة 2016 واللائحة التنفيذية للمركز القومي للبحوث 410 لسنة 2021",
+                prefix: "المادتين 1، و2 من القانون رقم 69 لسنة 1973، والمادتين الثالثة، و2 من اللائحة التنفيذية للمركز الصادرة بالقرار رقم 410 لسنة 2021، و",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: "، والمادة 13 من قانون الهيئات العامة رقم 61 لسنة 1963، والمادة 1/1 من القانون رقم 19 لسنة 1959"
+            },
+            universities_staff: {
+                isCivil: true,
+                note: "⚠️ ضابط اختصاص (المادة 163 ق 49/1972): يُشترط ورود طلب كتابي من رئيس الجامعة أو وزير التعليم العالي لمباشرة التحقيق مع العاملين بالجامعات من غير أعضاء هيئة التدريس.",
+                lawName: "قانون تنظيم الجامعات رقم 49 لسنة 1972 وقانون الخدمة المدنية رقم 81 لسنة 2016",
+                prefix: "المواد 157، و162، و163 من قانون تنظيم الجامعات الصادر بالقانون رقم 49 لسنة 1972 وتعديلاته، و",
+                extraCivilSubject: "",
+                base: "",
+                majaza: "",
+                ihala: "",
+                retired: "",
+                suffix: ""
+            },
+            coop_agri: {
+                isCivil: false,
+                note: "تخضع الجمعيات التعاونية الزراعية للقانون رقم 122 لسنة 1980 ولائحة تنظيم ندب واختصاصات ومسؤوليات وتأديب مديري الجمعيات التعاونية الزراعية.",
+                lawName: "قانون التعاون الزراعي رقم 122 لسنة 1980 ولائحة مديري الجمعيات التعاونية الزراعية",
+                prefix: "المادتين 45، و60 من قانون التعاون الزراعي الصادر بالقانون رقم 122 لسنة 1980، و",
+                base: "المواد 2، و5، و6 من لائحة تنظيم ندب واختصاصات ومسئوليات وتأديب مديرى الجمعيات التعاونية الزراعية",
+                majaza: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                ihala: "، والمادة 62 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                retired: "، والمادة 66 من قانون الخدمة المدنية رقم 81 لسنة 2016",
+                suffix: ""
+            },
+            public_48: {
+                isCivil: false,
+                note: "⚠️ ضابط (م 93 و95 ق 48/1978): التحقيق مع شاغلي الوظائف العليا بطلب رئيس مجلس الإدارة، ويلزم العرض على اللجنة الثلاثية قبل الإحالة للمحكمة لتوقيع جزاء الفصل أو الإحالة للمعاش.",
+                lawName: "قانون نظام العاملين بالقطاع العام الصادر بالقانون رقم 48 لسنة 1978 وتعديلاته",
+                prefix: "",
+                base: "المواد 78/1، و79/1، و80، و82، و84 من قانون نظام العاملين بالقطاع العام رقم 48 لسنة 1978",
+                majaza: "، والمادة 84 من ذات القانون",
+                ihala: "، والمادة 84/3 من ذات القانون",
+                retired: "، والمادة 88 من ذات القانون",
+                suffix: ""
+            },
+            business_holding: {
+                isCivil: false,
+                note: "⚠️ ضابط (م 48 المعدلة بالقانون 185 لسنة 2020): ينعقد الاختصاص للنيابة والمحاكم التأديبية بالنسبة للعاملين بالشركات القابضة دون الشركات التابعة.",
+                lawName: "قانون شركات قطاع الأعمال العام رقم 203 لسنة 1991 المعدل بالقانون رقم 185 لسنة 2020",
+                prefix: "المادتين الرابعة، والخامسة من قانون إصدار قانون شركات قطاع الأعمال العام رقم 203 لسنة 1991 المعدل بالقانون رقم 185 لسنة 2020، و",
+                base: "المادة 48 من القانون رقم 203 لسنة 1991 المعدل بالقانون رقم 185 لسنة 2020، والمواد 78، و79، و80 من القانون رقم 48 لسنة 1978",
+                majaza: "",
+                ihala: "",
+                retired: "، والمادة 88 من القانون رقم 48 لسنة 1978",
+                suffix: ""
+            }
+        };
+
+        function filterEntities() {
+            var q = document.getElementById('entity_search').value.trim().toLowerCase();
+            var sel = document.getElementById('sel_entity');
+            Array.from(sel.options).forEach(function(opt) {
+                opt.hidden = q && opt.text.toLowerCase().indexOf(q) === -1;
+            });
+        }
+
+        function setViolationNature(val) {
+            currentViolationNature = val;
+            document.getElementById('vnature-admin').classList.toggle('vtype-btn-active', val === 'مخالفة إدارية');
+            document.getElementById('vnature-fin').classList.toggle('vtype-btn-active', val === 'مخالفة مالية');
+            document.getElementById('vnature-both').classList.toggle('vtype-btn-active', val === 'مخالفة مالية وإدارية');
+            generateQaydOutput();
+        }
+
+        function onTopicChange() {
+            var topic = document.getElementById('sel_topic').value;
+            if (topic === 'financial' || topic === 'tenders') {
+                setViolationNature('مخالفة مالية');
+            } else {
+                setViolationNature('مخالفة إدارية');
+            }
+        }
+
+        function onEntityChange() {
+            var entKey = document.getElementById('sel_entity').value;
+            var ent = ENTITIES[entKey];
+            document.getElementById('entity_note_box').innerHTML = "<strong>ضابط الاختصاص والقيد:</strong> " + ent.note;
+            generateQaydOutput();
+        }
+
+        function generateQaydOutput() {
+            var entKey = document.getElementById('sel_entity').value;
+            var ent = ENTITIES[entKey];
+            var topic = document.getElementById('sel_topic').value;
+            var action = document.getElementById('sel_action').value;
+            var isRetired = document.getElementById('chk_retired').checked;
+
+            var name = document.getElementById('inp_name').value.trim() || "[اسم المخالف ووظيفته ودرجته]";
+            var nid = document.getElementById('inp_nid').value.trim();
+            var date = document.getElementById('inp_date').value.trim() || "[غضون عام 2026]";
+            var place = document.getElementById('inp_place').value.trim() || "[مقر عمله بـ ...]";
+            var fact = document.getElementById('inp_fact').value.trim() || "[بيان الأفعال المادية المسندة للمتهم تفصيلاً]";
+
+            // تنبيهات الحارس التشريعي
+            var alerts = [];
+            if ((action === 'majaza' || action === 'ihala' || action === 'hifz_ahamia') && nid.length !== 14) {
+                alerts.push("⚠️ تنبيه قرار الرقم القومي 172 لسنة 2025: يجب إدراج الرقم القومي كاملاً (14 رقماً) في القيد والوصف.");
+            }
+            if (isRetired && action === 'majaza') {
+                alerts.push("⛔ خطأ في التصرف: لا يجوز مجازاة من انتهت خدمته إدارياً؛ المحكمة التأديبية هي المختصة وحدها.");
+            }
+            if ((topic === 'building' || topic === 'criminal_offense') && (action === 'majaza' || action === 'hifz_ahamia')) {
+                alerts.push("⚠️ تنبيه الإحالة الوجوبية: الجرائم الجنائية ومخالفات البناء (م 99) تستوجب الإحالة للمحكمة التأديبية متى ثبتت.");
+            }
+
+            var banner = document.getElementById('guard_banner');
+            if (alerts.length > 0) {
+                banner.className = "p-3.5 rounded-2xl border-2 border-red-400 bg-red-50 text-red-900 text-xs font-bold space-y-1";
+                banner.innerHTML = alerts.join("<br>");
+            } else {
+                banner.className = "p-3 rounded-2xl border-2 border-emerald-400 bg-emerald-50 text-emerald-900 text-xs font-bold";
+                banner.innerHTML = "✅ القيد والوصف منضبط تشريعياً وخالٍ من المآخذ الرقابية (تم ضبط نوع المخالفة: " + currentViolationNature + "، وحذف م 61 في الحفظ لعدم الأهمية، وعدم ذكر مواد التعليمات).";
+            }
+
+            // حالات الحفظ بدون قيد
+            if (action === 'hifz_saha') {
+                document.getElementById('box_taakeef').innerText = "وحيث إنه عما نُسب إلى المشكو في حقه سالف البيان، ولما كانت الأوراق قد خلت من أي دليل يساند الاتهام، وثبت عدم صحة ما أثير قبله، الأمر الذي نرى معه التقرير بحفظ الأوراق إدارياً قطعياً لعدم الصحة.";
+                document.getElementById('box_qayd').innerText = "لـــــــــذلـــــــــك نـــــــــرى:" + NL + "حفظ الأوراق إدارياً، قطعياً لعدم الصحة.";
+                return;
+            }
+            if (action === 'hifz_mukhalafa') {
+                document.getElementById('box_taakeef').innerText = "وحيث إنه بشأن ما أثير قبل المشكو في حقه، وإذ ثبت أن تصرفه قد جاء متفقاً وصحيح حكم القانون واللوائح المنظمة، وتجرد فعله من وصف المخالفة التأديبية، لذا نرى حفظ الأوراق إدارياً قطعياً لعدم المخالفة.";
+                document.getElementById('box_qayd').innerText = "لـــــــــذلـــــــــك نـــــــــرى:" + NL + "حفظ الأوراق إدارياً، قطعياً لعدم المخالفة.";
+                return;
+            }
+            if (action === 'hifz_moaqat') {
+                document.getElementById('box_taakeef').innerText = "وحيث إنه إزاء عدم كفاية الأدلة القائمة بالأوراق أو عدم التوصل لمعرفة الفاعل، تعين الوقوف بالإجراءات وحفظ الأوراق إدارياً مؤقتاً بحالتها.";
+                document.getElementById('box_qayd').innerText = "لـــــــــذلـــــــــك نـــــــــرى:" + NL + "حفظ الأوراق إدارياً، مؤقتاً بحالتها.";
+                return;
+            }
+
+            // بناء سلسلة مواد القيد
+            var articlesChain = "";
+            if (ent.isCivil) {
+                var civilList = ["57/الفقرة الأولى", "58/الفقرة الأولى", "60"];
+                if (action === 'majaza' || action === 'ihala') {
+                    civilList.push("61");
+                }
+                if (action === 'ihala') {
+                    civilList.push("62/4");
+                } else {
+                    civilList.push("62/3");
+                }
+                if (topic === 'absence') civilList.push("46/الفقرة الثانية");
+                if (isRetired) civilList.push("66");
+
+                var regList = ["149/الفقرة الأولى", "150/الفقرة الأولى"];
+                if (topic === 'financial') regList.push("150/15");
+                if (topic === 'tenders') regList.push("149/6");
+                if (topic === 'absence') regList.push("176");
+                if (topic === 'public_treat') regList.push("150/13");
+
+                articlesChain = ent.prefix + "بالمواد: " + civilList.join("، ") + " من قانون الخدمة المدنية الصادر بالقانون رقم 81 لسنة 2016، والمواد (" + regList.join("، ") + ") من لائحته التنفيذية الصادرة بالقرار رقم 1216 لسنة 2017" + (ent.extraCivilSubject || "") + (ent.suffix || "");
+            } else {
+                var dispArt = (action === 'ihala') ? ent.ihala : ent.majaza;
+                var retArt = isRetired ? ent.retired : "";
+                articlesChain = ent.prefix + "بالمواد: " + ent.base + dispArt + retArt + ent.suffix;
+            }
+
+            if (topic === 'financial') {
+                articlesChain += "، والمادة 11 من قانون الجهاز المركزي للمحاسبات رقم 144 لسنة 1988، وأحكام اللائحة المالية للموازنة والحسابات ولائحة المخازن";
+            } else if (topic === 'tenders') {
+                articlesChain += "، وأحكام قانون تنظيم التعاقدات الحكومية رقم 182 لسنة 2018 ولائحته التنفيذية";
+            } else if (topic === 'building') {
+                articlesChain += "، والمادتين 59 و99 من قانون البناء الموحد رقم 119 لسنة 2008 ولائحته التنفيذية";
+            } else if (topic === 'criminal_offense') {
+                articlesChain += "، وأحكام قانون العقوبات المنطبقة على الواقعة";
+            }
+
+            if (action === 'ihala') {
+                var retCouncil = isRetired ? "، والمادتين 20، و21" : "";
+                articlesChain += "، والمادة 14 من القانون رقم 117 لسنة 1958 بشأن إعادة تنظيم النيابة الإدارية والمحاكمات التأديبية، والمادتين 15/أولاً، و19/1" + retCouncil + " من قانون مجلس الدولة الصادر بالقانون رقم 47 لسنة 1972";
+            }
+
+            var secondClause = "ثانياً: مجازاة المخالف المذكور تأديبياً.";
+            var taakeefEnding = "الأمر الذي يستوجب مساءلته تأديبياً طبقاً لأحكام القانون.";
+
+            if (action === 'ihala') {
+                secondClause = "ثانياً: إحالة المخالف المذكور إلى المحكمة التأديبية المختصة.";
+            } else if (action === 'hifz_ahamia') {
+                secondClause = "ثانياً: حفظ ما نُسب إلى المخالف المذكور قطعياً لعدم الأهمية.";
+                taakeefEnding = "إلا أنه نظراً لضآلة الأثر وتداركه، فإن النيابة ترى الاكتفاء بقيد الواقعة ضده وحفظها قطعياً لعدم الأهمية.";
+            }
+
+            var nidText = nid ? nid : ".................... (14 رقماً)";
+            var retText = isRetired ? " (حالياً بالمعاش)" : "";
+
+            document.getElementById('box_taakeef').innerText = "ومن ثم يكون المذكور قد ارتكب ذنباً تأديبياً قوامه مخالفته أحكام " + ent.lawName + "، لعدم أدائه العمل المنوط به بدقة وأمانة وخروجه على مقتضى الواجب الوظيفي بالمخالفة للمواد المشار إليها بقيد المخالفة، " + taakeefEnding;
+
+            document.getElementById('box_qayd').innerText = "لـــــــــذلـــــــــك نـــــــــرى:" + NL + "أولاً: قيد الواقعة " + currentViolationNature + " " + articlesChain + "، ضــــد:" + NL + "- " + name + retText + " — (الرقم القومي: " + nidText + ")" + NL + NL + "لأنه في غضون " + date + "، وبوصفه السابق، وبمقر عمله " + place + ":" + NL + "خالف أحكام القوانين واللوائح والتعليمات المعمول بها، وخرج على مقتضى الواجب الوظيفي ولم يؤدِّ العمل المنوط به بدقة وأمانة، بأن:" + NL + fact + NL + NL + secondClause;
+        }
+
+        function copyText(id) {
+            navigator.clipboard.writeText(document.getElementById(id).innerText);
+            alert("✅ تم النسخ!");
+        }
+
+        function copyAll() {
+            var full = "[التكييف في ختام الأسباب]:" + NL + document.getElementById('box_taakeef').innerText + NL + NL + "==========================" + NL + NL + "[القيد والوصف والتصرف]:" + NL + document.getElementById('box_qayd').innerText;
+            navigator.clipboard.writeText(full);
+            alert("✅ تم نسخ التكييف والقيد معاً!");
+        }
+
+        function exportWord() {
+            var content = document.getElementById('box_taakeef').innerText + NL + NL + document.getElementById('box_qayd').innerText;
+            var bodyHtml = content.split(NL).join("<br>");
+            var html = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' dir='rtl'><head><meta charset='utf-8'><style>body{font-family:'Amiri',serif;direction:rtl;text-align:right;font-size:16pt;line-height:1.9;margin:2cm;}</style></head><body><p>" + bodyHtml + "</p></body></html>";
+            var a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([String.fromCharCode(65279), html], { type: 'application/msword' }));
+            a.download = "القيد_والوصف.doc";
+            document.body.appendChild(a); a.click(); a.remove();
+        }
+
+        window.addEventListener('DOMContentLoaded', onEntityChange);
+    </script>
+</body>
+</html>
