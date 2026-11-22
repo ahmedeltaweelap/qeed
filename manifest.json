@@ -1,6 +1,6 @@
 {
-  "name": "مُصيغ القيد والوصف الذكي — المعاون",
-  "short_name": "المعاون",
+  "name": "القيد والوصف",
+  "short_name": "القيد والوصف",
   "start_url": "./index.html",
   "display": "standalone",
   "dir": "rtl",
